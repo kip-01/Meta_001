@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://kip-01.github.io/Meta_001/sitemap.xml
