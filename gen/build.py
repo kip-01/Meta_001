@@ -46,22 +46,29 @@ def art(seed, kind=''):
     return '<svg viewBox="0 0 400 250" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="400" height="250" fill="var(--panel)"/><circle cx="%d%%" cy="%d%%" r="120" fill="var(--brand)" opacity=".35"/>%s</svg>' % (cx, cy, rings)
 
 
+def portrait(size=800, cls='me-img', sizes='(max-width:700px) 70vw, 320px', eager=False):
+    """Profile photo as <picture>: WebP first, JPEG fallback, 400/800/1600 px."""
+    return ('<picture><source type="image/webp" srcset="assets/img/kiprop-400.webp 400w, assets/img/kiprop-800.webp 800w, assets/img/kiprop-1600.webp 1600w" sizes="%s">'
+            '<img class="%s" src="assets/img/kiprop-%d.jpg" srcset="assets/img/kiprop-400.jpg 400w, assets/img/kiprop-800.jpg 800w, assets/img/kiprop-1600.jpg 1600w" sizes="%s" width="800" height="800" alt="Portrait of Kiprop Haggai, smiling, in a grey-blue blazer and coral bow tie" %s decoding="async"></picture>'
+            % (sizes, cls, size, sizes, 'fetchpriority="high"' if eager else 'loading="lazy"'))
+
+
 def head(title, desc, page, base=''):
     t = title if page == 'index' else title + ' · ' + NAME
     ld = ''
     if page == 'index':
-        ld = '<script type="application/ld+json">%s</script>' % json.dumps({'@context': 'https://schema.org', '@type': 'Person', 'name': NAME, 'jobTitle': 'Project and resilience practitioner', 'telephone': PHONE_TEL, 'email': EMAIL, 'url': SITE_URL, 'address': {'@type': 'PostalAddress', 'addressLocality': 'Kakamega', 'addressCountry': 'KE'}, 'sameAs': ['https://medium.com/@kiprop', 'https://github.com/kip-01']})
+        ld = '<script type="application/ld+json">%s</script>' % json.dumps({'@context': 'https://schema.org', '@type': 'Person', 'name': NAME, 'jobTitle': 'Project and resilience practitioner', 'telephone': PHONE_TEL, 'email': EMAIL, 'url': SITE_URL, 'image': SITE_URL + 'assets/img/kiprop-1600.jpg', 'address': {'@type': 'PostalAddress', 'addressLocality': 'Kakamega', 'addressCountry': 'KE'}, 'sameAs': ['https://medium.com/@kiprop', 'https://github.com/kip-01']})
     return '''<!doctype html>
 <html lang="en-KE"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>%s</title><meta name="description" content="%s">
-<meta property="og:title" content="%s"><meta property="og:description" content="%s"><meta property="og:type" content="website"><meta name="theme-color" content="#0E7C86">
+<meta property="og:title" content="%s"><meta property="og:description" content="%s"><meta property="og:type" content="website"><meta property="og:image" content="%sassets/img/kiprop-og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Kiprop Haggai"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="%sassets/img/kiprop-og.jpg"><meta name="theme-color" content="#0E7C86">
 <link rel="icon" href="data:image/svg+xml,%%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%%3E%%3Crect width='32' height='32' rx='9' fill='%%230E7C86'/%%3E%%3Ctext x='16' y='22' font-size='16' font-family='sans-serif' font-weight='700' text-anchor='middle' fill='%%2322D3EE'%%3EKH%%3C/text%%3E%%3C/svg%%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap">
 %s<link rel="stylesheet" href="%sassets/css/app.css"><script>try{var s=localStorage.getItem('scheme');if(s&&s!=='lagoon')document.documentElement.setAttribute('data-scheme',s)}catch(e){}</script>
 %s</head><body>
 <a class="skip" href="#main">Skip to content</a><div class="bar-progress" aria-hidden="true"></div>
-''' % (E(t), E(desc), E(t), E(desc), '<base href="/Meta_001/">\n' if page == '404' else '', base, ld)
+''' % (E(t), E(desc), E(t), E(desc), SITE_URL, SITE_URL, '<base href="/Meta_001/">\n' if page == '404' else '', base, ld)
 
 
 def header(active):
@@ -156,10 +163,11 @@ def index():
 <h1>Programmes that hold when <span class="grad">the rains don't.</span></h1>
 <p class="lede">I design and run work where climate, livelihoods and conflict overlap, from pastoral Samburu to mining country in Kakamega. I also run TerraHeal, a pharmacy, and I led community and compliance work at TerraOre.</p>
 <div class="cta"><a class="btn accent" href="%s" target="_blank" rel="noopener">%s WhatsApp %s</a><a class="btn dark" href="%s">%s Call</a><a class="btn" href="#console">Open the dashboard</a></div></div>
+<div class="hero-side"><figure class="me" aria-label="Kiprop Haggai">%s<figcaption>Kiprop Haggai · Kakamega</figcaption></figure>
 <div class="floaters" aria-label="Current and recent work">
 <a class="fl" href="business.html#terraheal"><small>Now</small><b>TerraHeal Pharmaceuticals</b><em>Pharmacy operations, supply and systems</em></a>
 <a class="fl" href="business.html#terraore"><small>2024 to 2025</small><b>TerraOre community and CSR</b><em>Relocation, licensing, engagement</em></a>
-<a class="fl" href="medium.html"><small>Writing</small><b>Stories from the field</b><em>Eight articles on Medium</em></a></div>
+<a class="fl" href="medium.html"><small>Writing</small><b>Stories from the field</b><em>Eight articles on Medium</em></a></div></div>
 </div></section>
 
 <section id="console" style="padding-top:20px"><div class="wrap"><div class="console" data-filter-scope>
@@ -180,7 +188,7 @@ def index():
 
 <section class="soft"><div class="wrap"><div class="sec-head"><div><span class="eyebrow">Next step</span><h2>Have a project, a bid or a pharmacy question?</h2></div></div>
 <div class="cta" style="margin-top:0"><a class="btn accent" href="%s" target="_blank" rel="noopener">%s WhatsApp %s</a><a class="btn dark" href="%s">%s Call %s</a><a class="btn" href="more.html">Everything else, on More</a></div></div></section>
-''' % (WA_URL + '?text=Hello%20Kiprop%2C%20', IC['wa'], PHONE_DISPLAY, TEL, IC['phone'], chips_fields(), kp, bars, axis, bars_g, st, arts, vids, WA_URL + '?text=Hello%20Kiprop%2C%20', IC['wa'], PHONE_DISPLAY, TEL, IC['phone'], PHONE_DISPLAY)
+''' % (WA_URL + '?text=Hello%20Kiprop%2C%20', IC['wa'], PHONE_DISPLAY, TEL, IC['phone'], portrait(800, eager=True), chips_fields(), kp, bars, axis, bars_g, st, arts, vids, WA_URL + '?text=Hello%20Kiprop%2C%20', IC['wa'], PHONE_DISPLAY, TEL, IC['phone'], PHONE_DISPLAY)
     page('index.html', 'Kiprop Haggai: resilience, peace and enterprise', 'Dashboard portfolio of Kiprop Haggai: climate resilience, peacebuilding, environmental compliance, TerraHeal Pharmaceuticals, TerraOre and Medium articles. Call or WhatsApp 0716 494 214.', 'index', body)
 
 
@@ -274,7 +282,7 @@ def more():
     toc = [('about', 'About'), ('expertise', 'Fields of expertise'), ('method', 'How I work'), ('experience', 'Experience'), ('education', 'Education'), ('help', 'How I can help'), ('beyond', 'Beyond work'), ('faq', 'Questions'), ('reach', 'Handles'), ('colours', 'Colour schemes'), ('site', 'About this site')]
     body = '''<div class="page-head"><div class="wrap"><p class="crumbs"><a href="index.html">Dashboard</a> / More</p><span class="eyebrow">More</span><h1>Everything behind the dashboard.</h1><p class="lede">The long version: what I do, how I work, where I studied, what I can help with, and how to reach me.</p></div></div>
 <div class="wrap more-layout"><nav class="toc" aria-label="On this page">%s</nav><div>
-<section id="about"><h2>About</h2><div class="two"><div><p class="lede" style="font-size:1.1rem">I am a project and resilience practitioner based in Kakamega. Since 2016 I have worked wherever climate, livelihoods and conflict overlap: fish farms at Sagana, savings groups and special schools in the east, pastoral Samburu, and a mineral plant in Ikolomani.</p><p>My habit is to start with the people who will be affected and the records that already exist, then design the smallest plan that can actually be delivered. Most of what is on this site began that way.</p><p>Today I run operations at TerraHeal Pharmaceuticals and write proposals and articles on the side.</p></div><div><img src="assets/img/fields.jpg" alt="Project staff and smallholder farmers in a bean field" style="border-radius:22px;border:2px solid var(--ink)" loading="lazy"></div></div></section>
+<section id="about"><h2>About</h2><div class="two"><div><p class="lede" style="font-size:1.1rem">I am a project and resilience practitioner based in Kakamega. Since 2016 I have worked wherever climate, livelihoods and conflict overlap: fish farms at Sagana, savings groups and special schools in the east, pastoral Samburu, and a mineral plant in Ikolomani.</p><p>My habit is to start with the people who will be affected and the records that already exist, then design the smallest plan that can actually be delivered. Most of what is on this site began that way.</p><p>Today I run operations at TerraHeal Pharmaceuticals and write proposals and articles on the side.</p></div><div class="about-media"><figure class="me-card">%s<figcaption><b>Kiprop Haggai</b><span>Project and resilience practitioner · Kakamega</span></figcaption></figure><img src="assets/img/fields.jpg" alt="Project staff and smallholder farmers in a bean field" style="border-radius:22px;border:2px solid var(--ink)" loading="lazy"></div></div></section>
 <section id="expertise"><h2>Fields of expertise</h2><p style="color:var(--muted)">Thirteen areas, from core programme work to the things I picked up along the way. Open any one for the evidence.</p><div class="chips" style="margin:14px 0 18px"><button class="chip" type="button" data-exp-chip="all" aria-pressed="true">All 13</button><button class="chip" type="button" data-exp-chip="core" aria-pressed="false">Core programme work</button><button class="chip" type="button" data-exp-chip="other" aria-pressed="false">Other fields</button></div><div class="exp">%s</div></section>
 <section id="method"><h2>How I work</h2><div class="method">%s</div></section>
 <section id="experience"><h2>Experience</h2><div class="chips" style="margin:14px 0 20px"><button class="chip" type="button" data-role-chip="all" aria-pressed="true">All roles</button>%s</div><ol class="tl">%s</ol></section>
@@ -286,7 +294,7 @@ def more():
 <section id="colours"><h2>Colour schemes</h2><p style="color:var(--muted)">Teal and black carry the brand. Pick the mood; the whole site changes and remembers your choice on this device.</p><div class="big-sw">%s</div></section>
 <section id="site"><h2>About this site</h2><p>Plain HTML, CSS and JavaScript with no cookies and no tracking. User flows, the dashboard layout, the colour schemes, hover-card states and the Medium landing page were designed in Figma first. Pages slide into each other using the browser's view-transition support, and fall back to normal navigation elsewhere. The code lives in the Meta_001 repository on GitHub.</p><p><a href="https://www.figma.com/design/pQMq5zq0D9bbvNvQpLfiD8" target="_blank" rel="noopener">Open the Figma design</a> · <a href="https://github.com/kip-01/Meta_001" target="_blank" rel="noopener">Open the repository</a></p></section>
 </div></div>''' % (
-        ''.join('<a href="#%s">%s</a>' % t for t in toc), ex, method,
+        ''.join('<a href="#%s">%s</a>' % t for t in toc), portrait(800, 'me-img', '(max-width:700px) 90vw, 420px'), ex, method,
         ''.join('<button class="chip" type="button" data-role-chip="%s" aria-pressed="false">%s</button>' % (k, E(n)) for k, n in FIELDS), tl, edu, trn, svc, wa_for('Hello Kiprop, I would like to talk about a project.'), IC['wa'], faq, hd, sch)
     page('more.html', 'More: expertise, experience, credentials and handles', 'Fields of expertise, how I work, experience timeline, education, services, FAQ, social handles and colour schemes for Kiprop Haggai.', 'more', body)
 
@@ -309,14 +317,14 @@ def medium():
     paths = ''.join('<div><h3 style="color:var(--panel-ink)">%s</h3><p>%s</p><ol>%s</ol></div>' % (E(t), E(s), ''.join('<li><a href="%s" target="_blank" rel="noopener">%s</a></li>' % (E(A[i]['url']), E(A[i]['title'])) for i in ids)) for t, s, ids in PATHS)
     body = '''
 <section class="m-hero"><div class="wrap"><div><span class="eyebrow">Stories from the field · on Medium</span><h1>Notes on resilience, peace and everyday leadership.</h1><p class="lede">Eight stories, 2019 to 2022, from dryland farms, women's groups and church halls. Short, plain and written close to the ground.</p>
-<div class="author"><img src="%s" alt="" referrerpolicy="no-referrer" width="54" height="54"><div><b>%s</b><br><span style="color:var(--panel-muted)">medium.com/@kiprop</span></div></div>
+<div class="author"><picture><source type="image/webp" srcset="assets/img/kiprop-face-128.webp 1x, assets/img/kiprop-face-256.webp 2x"><img src="assets/img/kiprop-face-128.jpg" srcset="assets/img/kiprop-face-128.jpg 1x, assets/img/kiprop-face-256.jpg 2x" alt="Kiprop Haggai" width="64" height="64"></picture><div><b>%s</b><br><span style="color:var(--panel-muted)">medium.com/@kiprop</span></div></div>
 <div class="cta" style="margin:0"><a class="btn accent" href="https://medium.com/@kiprop" target="_blank" rel="noopener">%s Follow on Medium</a><a class="btn" style="color:var(--panel-ink);border-color:var(--panel-ink)" href="%s" target="_blank" rel="noopener">Read the latest</a></div></div>
 <a class="feat" href="%s" target="_blank" rel="noopener"><div class="ph"><img src="%s" alt="" referrerpolicy="no-referrer"></div><div class="b"><span class="eyebrow" style="margin-bottom:6px">Latest · %s</span><h3>%s</h3><p style="color:var(--muted);margin:0">%s</p></div></a></div></section>
 <div class="m-stats"><div class="wrap"><div><b data-count="8">8</b><span>stories</span></div><div><b>2019 to 2022</b><span>published</span></div><div><b data-count="7">7</b><span>topics</span></div><div><b>Wamba to Embakasi</b><span>where they were set</span></div></div></div>
 <section id="stories"><div class="wrap" data-topic-scope data-topic="all"><div class="sec-head"><div><span class="eyebrow">Latest stories</span><h2>Pick a topic.</h2></div><p><b data-n>%d</b> stories shown. <a href="articles.html">Prefer a list? Open the archive.</a></p></div><div class="chips" style="margin-bottom:24px" role="group" aria-label="Filter stories by topic">%s</div><div class="grid">%s</div></div></section>
 <section class="band"><div class="wrap"><div class="sec-head"><div><span class="eyebrow">Reading paths</span><h2>Three ways in.</h2></div></div><div class="path">%s</div></div></section>
 <section><div class="wrap"><div class="follow"><h2>Follow the stories, or tell me what to write next.</h2><div class="cta" style="margin:0"><a class="btn dark" href="https://medium.com/@kiprop" target="_blank" rel="noopener">Follow on Medium</a><a class="btn" href="%s" target="_blank" rel="noopener">%s WhatsApp</a></div></div></div></section>''' % (
-        MEDIUM_AVATAR, NAME, IC['medium'], E(f['url']), E(f['url']), E(f['img']), datetime.date.fromisoformat(f['date']).strftime('%d %b %Y'), E(f['title']), E(f['blurb']), len(arts), chips, grid, paths, wa_for('Hello Kiprop, I read your stories on Medium. '), IC['wa'])
+        NAME, IC['medium'], E(f['url']), E(f['url']), E(f['img']), datetime.date.fromisoformat(f['date']).strftime('%d %b %Y'), E(f['title']), E(f['blurb']), len(arts), chips, grid, paths, wa_for('Hello Kiprop, I read your stories on Medium. '), IC['wa'])
     page('medium.html', 'Stories on Medium', 'Landing page for Kiprop Haggai\'s Medium stories: resilience, climate, peace, women and leadership, youth and family, with reading paths.', 'medium', body)
 
 
